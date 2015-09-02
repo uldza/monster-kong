@@ -12,6 +12,7 @@ import Fires from '../objects/Fires';
 import Barrels from '../objects/Barrels';
 
 export default class Game extends Phaser.State {
+
     init()
     {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -37,7 +38,7 @@ export default class Game extends Phaser.State {
         this.platforms = new Platforms(this.game, this.levelData.platformData);
 
         // Add goal
-        this.gloal = new Goal(this.game, this.levelData.goal.x, this.levelData.goal.y);
+        this.goal = new Goal(this.game, this.levelData.goal.x, this.levelData.goal.y);
 
         // Add fires
         this.fires = new Fires(this.game, this.levelData.fireData );
@@ -56,10 +57,10 @@ export default class Game extends Phaser.State {
         this.game.physics.arcade.collide(this.barrels, this.platforms);
 
         // Win state
-        this.game.physics.arcade.overlap(this.player, this.goal, this.player.die.bind(this));
-        // Lose when touching fire
+        this.game.physics.arcade.overlap(this.player, this.goal, this.win.bind(this));
+        // Player die, when touching fire
         this.game.physics.arcade.overlap(this.player, this.fires, this.player.die.bind(this));
-        // Lose when touching barrel
+        // Player die, when touching barrel
         this.game.physics.arcade.overlap(this.player, this.barrels, this.player.die.bind(this));
 
         this.player.stop();
@@ -95,7 +96,7 @@ export default class Game extends Phaser.State {
 
     win(player, goal)
     {
-        alert('you win!');
+        alert('YOU WIN!');
         this.game.state.start('Game');
     }
 }

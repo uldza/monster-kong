@@ -9,8 +9,9 @@ class Barrels extends Phaser.Group {
         //game, parent, name, addToStage, enableBody, physicsBodyType
         super(game, null, 'barrels', false, true);
 
-        this.x = data.x;
-        this.y = data.y;
+        this.startX = data.x;
+        this.startY = data.y;
+
         this.speed = speed;
 
         this.game.add.existing( this );
@@ -29,13 +30,13 @@ class Barrels extends Phaser.Group {
 
         if(!barrel)
         {
-          barrel = this.create(this.x, this.y, 'barrel');
+            barrel = this.create(this.startX, this.startY, 'barrel');
         }
 
         barrel.body.collideWorldBounds = true;
         barrel.body.bounce.set(1, 0);
 
-        barrel.reset(this.x, this.y);
+        barrel.reset(this.startX, this.startY);
 
         barrel.body.velocity.x = this.speed;
   }
