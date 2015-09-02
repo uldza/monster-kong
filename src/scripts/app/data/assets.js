@@ -58,15 +58,6 @@ export default {
         key: 'actionButton',
         type: 'image'
     },
-    {
-        key: 'player',
-        type: 'spritesheet',
-    },
-    {
-        key: 'fire',
-        type: 'spritesheet',
-    },
-
 
     // Example: adding a background music.
     // {

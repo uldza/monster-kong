@@ -35,6 +35,8 @@ export default class Preload extends Phaser.State {
   preload () {
     this.showSplashScreen();
     this.loadAssets();
+    this.load.spritesheet('player', '/player.png', 28, 30, 5, 1, 1);
+    this.load.spritesheet('fire', 'fire.png', 20, 21, 2, 1, 1);
     this.load.text('level', 'level_data/level_1.json');
   }
 
