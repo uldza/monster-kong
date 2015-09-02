@@ -9,6 +9,7 @@ import Player from '../objects/Player';
 import Goal from '../objects/Goal';
 import Platforms from '../objects/Platforms';
 import Fires from '../objects/Fires';
+import Barrels from '../objects/Barrels';
 
 export default class Game extends Phaser.State {
     init()
@@ -40,16 +41,26 @@ export default class Game extends Phaser.State {
 
         // Add fires
         this.fires = new Fires(this.game, this.levelData.fireData );
+
+        // Add barrels
+        this.barrels = new Barrels(this.game, this.levelData.barrelFrequency, this.levelData.barrelSpeed, this.levelData.goal );
     }
 
     update()
     {
+        // Player
         this.game.physics.arcade.collide(this.player, this.ground);
         this.game.physics.arcade.collide(this.player, this.platforms);
+        // Barrels
+        this.game.physics.arcade.collide(this.barrels, this.ground);
+        this.game.physics.arcade.collide(this.barrels, this.platforms);
+
         // Win state
-        this.game.physics.arcade.overlap(this.player, this.goal, this.win);
+        this.game.physics.arcade.overlap(this.player, this.goal, this.player.die.bind(this));
         // Lose when touching fire
         this.game.physics.arcade.overlap(this.player, this.fires, this.player.die.bind(this));
+        // Lose when touching barrel
+        this.game.physics.arcade.overlap(this.player, this.barrels, this.player.die.bind(this));
 
         this.player.stop();
 
@@ -72,6 +83,14 @@ export default class Game extends Phaser.State {
         {
             this.player.jump();
         }
+
+        // Remove barrels
+        this.barrels.forEach( (element) => {
+            if(element.x < 10 && element.y > 500)
+            {
+                element.kill();
+            }
+        }, this);
     }
 
     win(player, goal)

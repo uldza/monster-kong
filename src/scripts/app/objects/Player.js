@@ -14,8 +14,7 @@ class Player extends Phaser.Sprite {
         this.anchor.setTo(0.5);
         this.animations.add('walking', [0, 1, 2, 1], 6, true);
 
-        this.game.physics.arcade.enableBody(this);
-        //this.body.allowGravity = false;
+        this.game.physics.arcade.enable(this);
         this.body.collideWorldBounds = true;
 
 
