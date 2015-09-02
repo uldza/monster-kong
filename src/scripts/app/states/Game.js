@@ -6,7 +6,9 @@
  */
 import Ground from '../objects/Ground';
 import Player from '../objects/Player';
+import Goal from '../objects/Goal';
 import Platforms from '../objects/Platforms';
+import Fires from '../objects/Fires';
 
 export default class Game extends Phaser.State {
     init()
@@ -32,12 +34,22 @@ export default class Game extends Phaser.State {
 
         // Add platforms
         this.platforms = new Platforms(this.game, this.levelData.platformData);
+
+        // Add goal
+        this.gloal = new Goal(this.game, this.levelData.goal.x, this.levelData.goal.y);
+
+        // Add fires
+        this.fires = new Fires(this.game, this.levelData.fireData );
     }
 
     update()
     {
         this.game.physics.arcade.collide(this.player, this.ground);
         this.game.physics.arcade.collide(this.player, this.platforms);
+        // Win state
+        this.game.physics.arcade.overlap(this.player, this.goal, this.win);
+        // Lose when touching fire
+        this.game.physics.arcade.overlap(this.player, this.fires, this.player.die.bind(this));
 
         this.player.stop();
 
@@ -60,5 +72,11 @@ export default class Game extends Phaser.State {
         {
             this.player.jump();
         }
+    }
+
+    win(player, goal)
+    {
+        alert('you win!');
+        this.game.state.start('Game');
     }
 }
