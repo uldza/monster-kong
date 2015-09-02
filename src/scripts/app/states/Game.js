@@ -6,6 +6,7 @@
  */
 import Ground from '../objects/Ground';
 import Player from '../objects/Player';
+import Platforms from '../objects/Platforms';
 
 export default class Game extends Phaser.State {
     init()
@@ -28,11 +29,15 @@ export default class Game extends Phaser.State {
 
         // Load player
         this.player = new Player(this.game, this.levelData.playerStart.x, this.levelData.playerStart.y);
+
+        // Add platforms
+        this.platforms = new Platforms(this.game, this.levelData.platformData);
     }
 
     update()
     {
         this.game.physics.arcade.collide(this.player, this.ground);
+        this.game.physics.arcade.collide(this.player, this.platforms);
 
         this.player.stop();
 
