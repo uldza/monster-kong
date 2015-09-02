@@ -17,10 +17,15 @@ export default class Game extends Phaser.State {
     {
         this.game.physics.startSystem(Phaser.Physics.ARCADE);
         this.game.physics.arcade.gravity.y = 1000;
+        this.game.world.setBounds(0,0,360,700);
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
 
-        this.game.world.setBounds(0,0,360,700);
+        this.wasd = {
+            up: this.game.input.keyboard.addKey(Phaser.Keyboard.W),
+            left: this.game.input.keyboard.addKey(Phaser.Keyboard.A),
+            right: this.game.input.keyboard.addKey(Phaser.Keyboard.D)
+        };
     }
 
     create()
@@ -45,6 +50,9 @@ export default class Game extends Phaser.State {
 
         // Add barrels
         this.barrels = new Barrels(this.game, this.levelData.barrelFrequency, this.levelData.barrelSpeed, this.levelData.goal );
+
+        // Add controlls
+        this.createOnscreenControls();
     }
 
     update()
@@ -66,11 +74,11 @@ export default class Game extends Phaser.State {
         this.player.stop();
 
         // Player movement
-        if(this.cursors.left.isDown || this.player.customParams.isMovingLeft)
+        if(this.cursors.left.isDown || this.wasd.left.isDown || this.player.customParams.isMovingLeft)
         {
             this.player.moveLeft();
         }
-        else if(this.cursors.right.isDown || this.player.customParams.isMovingRight)
+        else if(this.cursors.right.isDown || this.wasd.right.isDown || this.player.customParams.isMovingRight)
         {
             this.player.moveRight();
         }
@@ -80,7 +88,7 @@ export default class Game extends Phaser.State {
         }
 
         // Player jump
-        if((this.cursors.up.isDown || this.player.customParams.mustJump) && this.player.body.touching.down)
+        if((this.cursors.up.isDown || this.wasd.up.isDown || this.player.customParams.mustJump) && this.player.body.touching.down)
         {
             this.player.jump();
         }
@@ -98,5 +106,62 @@ export default class Game extends Phaser.State {
     {
         alert('YOU WIN!');
         this.game.state.start('Game');
+    }
+
+    createOnscreenControls()
+    {
+        this.leftArrow = this.add.button(20, 535, 'arrowButton');
+        this.rightArrow = this.add.button(110, 535, 'arrowButton');
+        this.actionButton = this.add.button(280, 535, 'actionButton');
+
+        this.leftArrow.alpha = 0.5;
+        this.rightArrow.alpha = 0.5;
+        this.actionButton.alpha = 0.5;
+
+        this.leftArrow.fixedToCamera = true;
+        this.rightArrow.fixedToCamera = true;
+        this.actionButton.fixedToCamera = true;
+
+        this.actionButton.events.onInputDown.add( () => {
+            this.player.customParams.mustJump = true;
+        }, this);
+
+        this.actionButton.events.onInputUp.add( () => {
+            this.player.customParams.mustJump = false;
+        }, this);
+
+        //left
+        this.leftArrow.events.onInputDown.add( () => {
+            this.player.customParams.isMovingLeft = true;
+        }, this);
+
+        this.leftArrow.events.onInputUp.add( () => {
+            this.player.customParams.isMovingLeft = false;
+        }, this);
+
+        this.leftArrow.events.onInputOver.add( () => {
+            this.player.customParams.isMovingLeft = true;
+        }, this);
+
+        this.leftArrow.events.onInputOut.add( () => {
+            this.player.customParams.isMovingLeft = false;
+        }, this);
+
+        //right
+        this.rightArrow.events.onInputDown.add( () => {
+            this.player.customParams.isMovingRight = true;
+        }, this);
+
+        this.rightArrow.events.onInputUp.add( () => {
+            this.player.customParams.isMovingRight = false;
+        }, this);
+
+        this.rightArrow.events.onInputOver.add( () => {
+            this.player.customParams.isMovingRight = true;
+        }, this);
+
+        this.rightArrow.events.onInputOut.add( () => {
+            this.player.customParams.isMovingRight = false;
+        }, this);
     }
 }
